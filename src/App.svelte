@@ -69,10 +69,9 @@
 
   function handleApiResponse() {
     if (this.status == 200) {
-      showReceipt = true;
       console.log(JSON.parse(this.responseText))
       songs = JSON.parse(this.responseText).items;
-      
+      showReceipt = true;
     } else if (this.status == 401) {
       
     } else {
