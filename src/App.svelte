@@ -1,5 +1,6 @@
 <script>
   import domtoimage from "dom-to-image";
+  import html2canvas from "html2canvas";
   import { onMount } from "svelte";
   let redirect = "http://localhost:5000/"
   let client_id = "1461a32c547441d481b49799e368ff32";
@@ -104,6 +105,25 @@
     fetchToken(code);
     window.history.pushState("", "", redirect)
   }
+
+  function getSongString(song) {
+    return song?.name + " - " + song?.artists?.map((artist, i) => {
+      if (i == 0) {
+        return artist.name
+      } else {
+        return " " + artist.name
+      }
+    })
+  }
+
+  function getSongDuration(song) {
+    const minutes = Math.floor(Math.ceil(song.duration_ms / 1000) / 60)
+    let seconds = (Math.ceil(song.duration_ms / 1000) % 60)
+    if (seconds <= 9) {
+      seconds = "0" + seconds
+    }
+    return minutes + ":" + seconds
+  }
   onMount(() => {
       if (window.location.search.length > 0) {
         showReceipt = true;
@@ -115,15 +135,34 @@
 
     function consolelog() {
       console.log(songs)
+      console.log(showReceipt)
+    }
+
+    function downloadImage() {
+      var offscreen = document.querySelector('.nutrition-facts-container');
+      html2canvas(offscreen).then((canvas) => {
+          var dataUrl = canvas.toDataURL();
+          var link = document.createElement('a');
+          link.download = 'nutrition-label.jpeg';
+          link.href = dataUrl;
+          link.click();
+      })
+      /*
+      domtoimage.toJpeg(document.getElementById("nutrition-label"), {quality: 0.95})
+        .then(function (dataUrl) {
+          var link = document.createElement('a');
+          link.download = 'nutrition-label.jpeg';
+          link.href = dataUrl;
+          link.click();
+        })
+        ]*/
     }
 
 </script>
 
-<main>
+<main style="display: flex;flex-direction: column;align-items: center;">
   <h1>Spotify Nutritional Facts</h1>
   <button on:click={getAuthorization}>{access_token ? "Logged in" : "Connect to Spotify"}</button>
-  <button on:click={consolelog}>Console</button>
-
   <div>
     <button on:click={getShortTerm}>Last Month</button>
     <button on:click={getMediumTerm}>Last 6 Months</button>
@@ -131,7 +170,9 @@
   </div>
   {#if showReceipt}
   <body>
-    <div class="nutrition-facts-container">
+    <div style="
+    display: flex;flex-direction: column;align-items: center;">
+    <div id="nutrition-label" class="nutrition-facts-container">
       <span class="title">Nutrition Facts</span>
       <hr class="hr-light" />
       <span class="nutrition-servings">1 serving per container</span>
@@ -153,10 +194,10 @@
         <tbody>
           <tr>
             <td>
-              <span>{song?.name} - {song?.artists[0].name}</span>
+              <span>{getSongString(song)}</span>
               <span>{i + 1}g</span>
             </td>
-            <td>{Math.floor(Math.ceil(song.duration_ms / 1000) / 60)}:{(Math.ceil(song.duration_ms / 1000) % 60)}</td>
+            <td>{getSongDuration(song)}</td>
           </tr>
         </tbody>
         {/each}
@@ -172,6 +213,10 @@
         >
       </div>
     </div>
+    <div>
+    <button on:click={downloadImage}>Download Image</button>
+  </div>
+  </div>
   </body> 
   {/if}
 </main>
