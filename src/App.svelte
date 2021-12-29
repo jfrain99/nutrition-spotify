@@ -2,12 +2,12 @@
   import domtoimage from "dom-to-image";
   import html2canvas from "html2canvas";
   import { onMount } from "svelte";
-  let redirect = "https://nutrition-spotify.vercel.app/"
+//  let redirect = "https://nutrition-spotify.vercel.app/"
+  let redirect = "http://localhost:5000/"
   let client_id = "1461a32c547441d481b49799e368ff32";
   let client_secret = "7b9fbf1d4d724735993227e7602311d3";
   let access_token = localStorage.getItem("access_token");
   let refresh_token;
-  let showReceipt = false;
   let songs;
   const auth = "https://accounts.spotify.com/authorize";
   const token = "https://accounts.spotify.com/api/token";
@@ -72,7 +72,6 @@
     if (this.status == 200) {
       console.log(JSON.parse(this.responseText))
       songs = JSON.parse(this.responseText).items;
-      showReceipt = true;
     } else if (this.status == 401) {
       
     } else {
@@ -126,17 +125,11 @@
   }
   onMount(() => {
       if (window.location.search.length > 0) {
-        showReceipt = true;
         handleRedirect();
       } else if (access_token == null) {
         console.log("No access token - should hide nutrition")
       } 
     });
-
-    function consolelog() {
-      console.log(songs)
-      console.log(showReceipt)
-    }
 
     function downloadImage() {
       var offscreen = document.querySelector('.nutrition-facts-container');
@@ -168,7 +161,7 @@
     <button on:click={getMediumTerm}>Last 6 Months</button>
     <button on:click={getLongTerm}>All Time</button>
   </div>
-  {#if showReceipt}
+  {#if songs}
   <body>
     <div style="
     display: flex;flex-direction: column;align-items: center;">
