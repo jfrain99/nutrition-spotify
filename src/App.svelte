@@ -123,7 +123,7 @@
 <main>
   <h1>Spotify Nutritional Facts</h1>
   <button on:click={getAuthorization}>{access_token ? "Logged in" : "Connect to Spotify"}</button>
-  <!-- button on:click={consolelog}>Console</button -->
+  <button on:click={consolelog}>Console</button>
 
   <div>
     <button on:click={getShortTerm}>Last Month</button>
