@@ -2,8 +2,8 @@
   import domtoimage from "dom-to-image";
   import html2canvas from "html2canvas";
   import { onMount } from "svelte";
-//  let redirect = "https://nutrition-spotify.vercel.app/"
-  let redirect = "http://localhost:5000/"
+  let redirect = "https://nutrition-spotify.vercel.app/"
+  //let redirect = "http://localhost:5000/"
   let client_id = "1461a32c547441d481b49799e368ff32";
   let client_secret = "7b9fbf1d4d724735993227e7602311d3";
   let access_token = localStorage.getItem("access_token");
@@ -92,13 +92,6 @@
     callApi(access_token, "long_term");
   }
 
-
-  function makeSongTag(index) {
-    let title = songs?.[index].title
-    let artists = songs?.[index].artists.map((artist, i) => artist.name)
-    console.log({title, artists})
-  }
-
   function handleRedirect() {
     const code = getCode();
     fetchToken(code);
@@ -140,15 +133,10 @@
           link.href = dataUrl;
           link.click();
       })
-      /*
-      domtoimage.toJpeg(document.getElementById("nutrition-label"), {quality: 0.95})
-        .then(function (dataUrl) {
-          var link = document.createElement('a');
-          link.download = 'nutrition-label.jpeg';
-          link.href = dataUrl;
-          link.click();
-        })
-        ]*/
+    }
+
+    function consolelog() {
+      console.log(songs)
     }
 
 </script>
@@ -156,6 +144,7 @@
 <main style="display: flex;flex-direction: column;align-items: center;">
   <h1>Spotify Nutritional Facts</h1>
   <button on:click={getAuthorization}>{access_token ? "Logged in" : "Connect to Spotify"}</button>
+  <button on:click={consolelog}>Console</button>
   <div>
     <button on:click={getShortTerm}>Last Month</button>
     <button on:click={getMediumTerm}>Last 6 Months</button>
