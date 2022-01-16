@@ -145,12 +145,16 @@
 </script>
 
 <main style="display: flex;flex-direction: column;align-items: center;">
+  {#if !access_token}
+    <div style="margin:10%"></div>
+  {/if}
   <div style="display: flex;flex-direction: column;align-items: center;">
     <h1 style="margin-top:10px; margin-bottom:5px;">Spotify Macros </h1>
     <h3 style="margin: 0px; margin-bottom:7px">The perfect songs for a healthy diet</h3>
   
   <button on:click={getAuthorization}>{access_token ? "Logged in" : "Connect to Spotify"}</button>
-</div>
+  </div>
+  {#if access_token}
   <div style="display: flex;flex-direction: column;align-items: center;">
     <h3 style="margin: 10px; margin-bottom:7px">Select a time frame to pull track data from</h3>
     <div>
@@ -159,6 +163,7 @@
       <button on:click={getLongTerm}>Last Year</button>
     </div>
   </div>
+  {/if}
   {#if songs}
   <body>
     <div style="
