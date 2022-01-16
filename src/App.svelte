@@ -2,8 +2,8 @@
   import domtoimage from "dom-to-image";
   import html2canvas from "html2canvas";
   import { onMount } from "svelte";
-  let redirect = "https://nutrition-spotify.vercel.app/"
-  //let redirect = "http://localhost:5000/"
+  //let redirect = "https://nutrition-spotify.vercel.app/"
+  let redirect = "http://localhost:5000/"
   let client_id = "1461a32c547441d481b49799e368ff32";
   let client_secret = "7b9fbf1d4d724735993227e7602311d3";
   let access_token = localStorage.getItem("access_token");
@@ -70,7 +70,6 @@
 
   function handleApiResponse() {
     if (this.status == 200) {
-      console.log(JSON.parse(this.responseText))
       songs = JSON.parse(this.responseText).items;
     } else if (this.status == 401) {
       
@@ -135,20 +134,30 @@
       })
     }
 
-    function consolelog() {
-      console.log(songs)
+    function getCalories(songs) {
+      var cals = 0;
+      songs.forEach(element => {
+        cals = cals + (element.duration_ms / 1000)
+      });
+      return (Math.floor(cals / 10))
     }
 
 </script>
 
 <main style="display: flex;flex-direction: column;align-items: center;">
-  <h1>Spotify Nutritional Facts</h1>
+  <div style="display: flex;flex-direction: column;align-items: center;">
+    <h1 style="margin-top:10px; margin-bottom:5px;">Spotify Macros </h1>
+    <h3 style="margin: 0px; margin-bottom:7px">The perfect songs for a healthy diet</h3>
+  
   <button on:click={getAuthorization}>{access_token ? "Logged in" : "Connect to Spotify"}</button>
-  <button on:click={consolelog}>Console</button>
-  <div>
-    <button on:click={getShortTerm}>Last Month</button>
-    <button on:click={getMediumTerm}>Last 6 Months</button>
-    <button on:click={getLongTerm}>All Time</button>
+</div>
+  <div style="display: flex;flex-direction: column;align-items: center;">
+    <h3 style="margin: 10px; margin-bottom:7px">Select a time frame to pull track data from</h3>
+    <div>
+      <button on:click={getShortTerm}>Last Month</button>
+      <button on:click={getMediumTerm}>Last 6 Months</button>
+      <button on:click={getLongTerm}>Last Year</button>
+    </div>
   </div>
   {#if songs}
   <body>
@@ -166,7 +175,7 @@
       <span class="nutrition-amount-per-serving">Amount per serving</span>
       <div class="nutrition-calories">
         <span>Calories</span>
-        <span>230</span>
+        <span>{getCalories(songs)}</span>
       </div>
       <hr />
       <span class="nutrition-daily-value">% Daily Value<sup>*</sup></span>
@@ -187,12 +196,11 @@
 
       <hr />
       <div class="nutrition-disclaimer">
-        <span>*</span>
-        <span
-          >The % Daily Value (DV) tells you how much a nutrient in a serving of
+        <span>
+          The % Daily Value (DV) tells you how much a nutrient in a serving of
           food contributes to a daily diet. 2,000 calories a day is used for
-          general nutrition advice.</span
-        >
+          general nutrition advice.
+        </span>
       </div>
     </div>
     <div>
@@ -210,8 +218,9 @@
 
   .nutrition-facts-container {
     color: #000000;
-    font-size: 1vw;
+    font-size: min(1vw, 5.1em);
     width: 50%;
+    max-width: 850px;
     display: inline-block;
     font-family: "Source Sans Pro", sans-serif;
     border: solid currentColor 0.8em;
@@ -221,7 +230,7 @@
   }
   .nutrition-facts-container .title {
     display: block;
-    font-size: 5.9em;
+    font-size: min(105px, 5.9em);
     font-weight: 900;
     line-height: 0.8em;
   }
