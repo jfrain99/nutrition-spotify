@@ -23,6 +23,9 @@
     window.location.href = url;
   }
   
+  function fEmily() {
+    window.alert("Fuck you Emily!")
+  }
   function getCode() {
     return new URLSearchParams(window.location.search).get('code')
   }
@@ -153,6 +156,7 @@
     <h3 style="margin: 0px; margin-bottom:7px">The perfect songs for a healthy diet</h3>
   
   <button on:click={getAuthorization}>{access_token ? "Logged in" : "Connect to Spotify"}</button>
+  <button on:click={fEmily}>Connect to Apple Music</button>
   </div>
   {#if access_token}
   <div style="display: flex;flex-direction: column;align-items: center;">
